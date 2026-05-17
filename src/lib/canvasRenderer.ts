@@ -56,7 +56,8 @@ export async function convertWebMToMP4(
   const ff = await getFFmpeg(onProgress)
 
   onProgress?.('Writing WebM data...')
-  await ff.writeFile('input.webm', await fetchFile(webmBlob))
+  const webmData = await fetchFile(webmBlob)
+  await ff.writeFile('input.webm', webmData)
 
   onProgress?.('Converting WebM → MP4...')
   await ff.exec([
@@ -76,8 +77,22 @@ export async function convertWebMToMP4(
   const data = await ff.readFile('output.mp4')
   onProgress?.('MP4 ready!')
 
-  return new Blob([data as Uint8Array], { type: 'video/mp4' })
+  // ✅ Handle both string and Uint8Array return types
+  let uint8: Uint8Array
+  if (typeof data === 'string') {
+    // Convert base64 string to Uint8Array
+    const binary = atob(data)
+    uint8 = new Uint8Array(binary.length)
+    for (let i = 0; i < binary.length; i++) {
+      uint8[i] = binary.charCodeAt(i)
+    }
+  } else {
+    uint8 = data as unknown as Uint8Array
+  }
+
+  return new Blob([uint8], { type: 'video/mp4' })
 }
+
 
 // ─────────────────────────────────────────────────────
 // Text Utilities
