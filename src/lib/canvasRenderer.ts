@@ -76,7 +76,7 @@ export async function convertWebMToMP4(
   const data = await ff.readFile('output.mp4')
   onProgress?.('MP4 ready!')
 
-  return new Blob([data], { type: 'video/mp4' })
+  return new Blob([data as Uint8Array], { type: 'video/mp4' })
 }
 
 // ─────────────────────────────────────────────────────
