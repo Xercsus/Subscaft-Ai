@@ -124,5 +124,9 @@ export async function burnSubtitles(
   const data = await ff.readFile(outputName)
 
   onProgress?.('Done!')
-  return new Blob([data], { type: 'video/mp4' })
+  const bytes = typeof data === 'string'
+  ? new TextEncoder().encode(data)
+  : new Uint8Array(data.buffer.slice(0))
+
+return new Blob([bytes.buffer as ArrayBuffer], { type: 'video/mp4' })
 }
