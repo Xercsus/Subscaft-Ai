@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import UploadZone from '@/components/UploadZone'
+import EmailCapture from '@/components/EmailCapture'
 import VideoPlayer from '@/components/VideoPlayer'
 import ControlBar from '@/components/ControlBar'
 import SubtitleList from '@/components/SubtitleList'
@@ -545,6 +546,14 @@ export default function Home() {
   )}
 
 </main>
+
+
+      {/* Email Capture Popup */}
+      <EmailCapture
+        trigger="auto"
+        delay={45000}
+        subtitleCount={subtitles.length}
+      />
 
       <style>{`
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
