@@ -77,22 +77,21 @@ export async function convertWebMToMP4(
   const data = await ff.readFile('output.mp4')
   onProgress?.('MP4 ready!')
 
-  // ✅ Handle both string and Uint8Array return types
-  let uint8: Uint8Array
+  // ✅ Copy into plain ArrayBuffer to avoid SharedArrayBuffer issues
+  let bytes: Uint8Array
   if (typeof data === 'string') {
-    // Convert base64 string to Uint8Array
     const binary = atob(data)
-    uint8 = new Uint8Array(binary.length)
+    bytes = new Uint8Array(binary.length)
     for (let i = 0; i < binary.length; i++) {
-      uint8[i] = binary.charCodeAt(i)
+      bytes[i] = binary.charCodeAt(i)
     }
   } else {
-    uint8 = data as unknown as Uint8Array
+    // Copy to fresh ArrayBuffer (fixes SharedArrayBuffer → Blob error)
+    bytes = new Uint8Array(data.buffer.slice(0))
   }
 
-  return new Blob([uint8], { type: 'video/mp4' })
+  return new Blob([bytes.buffer], { type: 'video/mp4' })
 }
-
 
 // ─────────────────────────────────────────────────────
 // Text Utilities
