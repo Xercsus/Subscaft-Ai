@@ -90,7 +90,7 @@ export async function convertWebMToMP4(
     bytes = new Uint8Array(data.buffer.slice(0))
   }
 
-  return new Blob([bytes.buffer], { type: 'video/mp4' })
+  return new Blob([bytes.buffer as ArrayBuffer], { type: 'video/mp4' })
 }
 
 // ─────────────────────────────────────────────────────
